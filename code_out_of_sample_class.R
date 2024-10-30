@@ -22,28 +22,32 @@ n2 = dim(sk_M)[3]        #number of males = 29
 
 # Female skulls Procrustes coordinates
 Proc_F <- shapes::procGPA(sk_F)
+Proc_F <- rotate_skulls(Proc_F$rotated, Proc_F$mshape)  #Rotate so that landmarks 1 and 3 are parallel to horizontal axis
 
 # Graphical visualization of the coordinates, the mean (black solid), functional median (red solid) and pointwise median (green dashed)
-plot_shapes(Proc_F$rotated, k, n1, joinline=c(1,6:8,2:5,1), maintext="Female Gorillas skuls",med_pw=T, median=T)
+plot_shapes(Proc_F, k, n1, joinline=c(1,6:8,2:5,1), maintext="Female Gorillas skuls",med_pw=T, median=T)
 
 # Male skulls Procrustes coordinates
 Proc_M <- shapes::procGPA(sk_M)
+Proc_M <- rotate_skulls(Proc_M$rotated, Proc_M$mshape)  #Rotate so that landmarks 1 and 3 are parallel to horizontal axis
 
 # Graphical visualization of the coordinates, the mean (black solid), functional median (red solid) and pointwise median (green dashed)
-plot_shapes(Proc_M$rotated, k, n2, joinline=c(1,6:8,2:5,1), maintext="Male Gorillas skuls",med_pw=T, median=T)
+plot_shapes(Proc_M, k, n2, joinline=c(1,6:8,2:5,1), maintext="Male Gorillas skuls",med_pw=T, median=T)
 
 # 2.b Full GPA of the whole sample, for joint visualization of both groups
 sk = abind::abind(sk_F,sk_M,along=3)
 Proc <- shapes::procGPA(sk)
 n = dim(sk)[3]
-plot_shapes(Proc$rotated, k, n, joinline=c(1,6:8,2:5,1), maintext="Gorilla skulls (F+M)",med_pw=T, median=T)
+Proc <- rotate_skulls(Proc$rotated, Proc$mshape)  #Rotate so that landmarks 1 and 3 are parallel to horizontal axis
+
+plot_shapes(Proc, k, n, joinline=c(1,6:8,2:5,1), maintext="Gorilla skulls (F+M)",med_pw=T, median=T)
 
 
 ## 3. Classification with leave-one-out cross validation
 
 true_class=c(rep("F",n1),rep("M",n2))
 
-class_results <- LOO_CV_classification(n,k,sk,true_class, all_ef=T, size=NULL, knnk=5)
+class_results <- LOO_CV_OOS_classification(n,k,sk,true_class, all_ef=T, knnk=5)
 
 ## 4. Classification results
 
